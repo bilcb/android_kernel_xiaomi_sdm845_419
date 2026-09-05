@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
  */
 
-#include "msm-audio-lpass.dtsi"
+#include "msm-audio-lpass-sdm845.dtsi"
 
 &msm_audio_ion {
 	iommus = <&apps_smmu 0x1821 0x0>;
@@ -11,10 +11,10 @@
 };
 
 &soc {
-	qcom,avtimer@170f7000 {
+	qcom,avtimer@170f700c {
 		compatible = "qcom,avtimer";
 		reg = <0x170f700c 0x4>,
-		      <0x170f7010 0x4>;
+			  <0x170f7010 0x4>;
 		reg-names = "avtimer_lsb_addr", "avtimer_msb_addr";
 		qcom,clk-div = <192>;
 		qcom,clk-mult = <10>;
@@ -102,7 +102,7 @@
 	};
 };
 
-&msm_dai_tdm_quat_rx {
+&tdm_quat_rx {
 	qcom,msm-cpudai-tdm-group-num-ports = <2>;
 	qcom,msm-cpudai-tdm-group-port-id = <36912 36914>;
 	dai_quat_tdm_rx_1: qcom,msm-dai-q6-tdm-quat-rx-1 {

@@ -38,7 +38,7 @@
 		qcom,mdss-dsi-qsync-min-refresh-rate = <45>;
 
 		qcom,mdss-dsi-display-timings {
-			timing@0 {
+			timing0 {
 				qcom,mdss-dsi-panel-width = <540>;
 				qcom,mdss-dsi-panel-height = <1920>;
 				qcom,mdss-dsi-h-front-porch = <28>;
@@ -72,7 +72,7 @@
 					"dsi_hs_mode";
 			};
 
-			timing@1 {
+			timing1 {
 				qcom,mdss-dsi-panel-width = <1280>;
 				qcom,mdss-dsi-panel-height = <1440>;
 				qcom,mdss-dsi-h-front-porch = <120>;
@@ -106,7 +106,7 @@
 					"dsi_hs_mode";
 			};
 
-			timing@2 {
+			timing2 {
 				qcom,mdss-dsi-panel-width = <1080>;
 				qcom,mdss-dsi-panel-height = <3840>;
 				qcom,mdss-dsi-h-front-porch = <30>;

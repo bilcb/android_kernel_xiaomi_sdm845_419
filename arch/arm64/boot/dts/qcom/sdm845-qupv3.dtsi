@@ -21,7 +21,7 @@
 	 * HS UART instances. HS UART usecases can be supported on these
 	 * instances only.
 	 */
-	qupv3_se6_4uart: qcom,qup_uart@0x898000 {
+	qupv3_se6_4uart: qcom,qup_uart@898000 {
 		compatible = "qcom,msm-geni-serial-hs";
 		reg = <0x898000 0x4000>;
 		reg-names = "se_phys";
@@ -41,7 +41,7 @@
 		qcom,wrapper-core = <&qupv3_0>;
 	};
 
-	qupv3_se7_4uart: qcom,qup_uart@0x89c000 {
+	qupv3_se7_4uart: qcom,qup_uart@89c000 {
 		compatible = "qcom,msm-geni-serial-hs";
 		reg = <0x89c000 0x4000>;
 		reg-names = "se_phys";
@@ -411,7 +411,7 @@
 	/* 2-wire UART */
 
 	/* Debug UART Instance for CDP/MTP platform */
-	qupv3_se9_2uart: qcom,qup_uart@0xa84000 {
+	qupv3_se9_2uart: qcom,qup_uart@a84000 {
 		compatible = "qcom,msm-geni-console";
 		reg = <0xa84000 0x4000>;
 		reg-names = "se_phys";
@@ -428,7 +428,7 @@
 	};
 
 	/* Debug UART Instance for RUMI platform */
-	qupv3_se10_2uart: qcom,qup_uart@0xa88000 {
+	qupv3_se10_2uart: qcom,qup_uart@a88000 {
 		compatible = "qcom,msm-geni-console";
 		reg = <0xa88000 0x4000>;
 		reg-names = "se_phys";
@@ -618,7 +618,7 @@
 			<&clock_gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
 		pinctrl-names = "default", "sleep";
 		pinctrl-0 = <&qupv3_se8_spi_active>;
-		pinctrl-1 = <&qupv3_se8_spi_active>;
+		pinctrl-1 = <&qupv3_se8_spi_sleep>;
 		interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
 		spi-max-frequency = <50000000>;
 		qcom,wrapper-core = <&qupv3_1>;
@@ -782,3 +782,5 @@
 		status = "disabled";
 	};
 };
+
+#include "xiaomi-sdm845-qupv3.dtsi"

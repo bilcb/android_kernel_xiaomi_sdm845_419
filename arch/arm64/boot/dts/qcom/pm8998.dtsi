@@ -12,7 +12,7 @@
 
 &spmi_bus {
 	qcom,pm8998@0 {
-		compatible = "qcom,spmi-pmic";
+		compatible = "qcom,pm8998", "qcom,spmi-pmic";
 		reg = <0x0 SPMI_USID>;
 		#address-cells = <2>;
 		#size-cells = <0>;
@@ -26,9 +26,9 @@
 			compatible = "qcom,qpnp-power-on";
 			reg = <0x800 0x100>;
 			interrupts = <0x0 0x8 0x0 IRQ_TYPE_NONE>,
-				     <0x0 0x8 0x1 IRQ_TYPE_NONE>,
-				     <0x0 0x8 0x4 IRQ_TYPE_NONE>,
-				     <0x0 0x8 0x5 IRQ_TYPE_NONE>;
+					 <0x0 0x8 0x1 IRQ_TYPE_NONE>,
+					 <0x0 0x8 0x4 IRQ_TYPE_NONE>,
+					 <0x0 0x8 0x5 IRQ_TYPE_NONE>;
 			interrupt-names = "kpdpwr", "resin",
 					"resin-bark", "kpdpwr-resin-bark";
 			qcom,pon-dbc-delay = <15625>;
@@ -38,23 +38,23 @@
 
 			qcom,pon_1 {
 				qcom,pon-type = <PON_POWER_ON_TYPE_KPDPWR>;
-				qcom,pull-up = <1>;
+				qcom,pull-up;
 				linux,code = <KEY_POWER>;
 			};
 
 			qcom,pon_2 {
 				qcom,pon-type = <PON_POWER_ON_TYPE_RESIN>;
-				qcom,pull-up = <1>;
+				qcom,pull-up;
 				linux,code = <KEY_VOLUMEDOWN>;
 			};
 
 			qcom,pon_3 {
 				qcom,pon-type = <PON_POWER_ON_TYPE_KPDPWR_RESIN>;
 				qcom,support-reset = <1>;
-				qcom,pull-up = <1>;
+				qcom,pull-up;
 				qcom,s1-timer = <6720>;
 				qcom,s2-timer = <2000>;
-				qcom,s2-type = <PON_POWER_OFF_DVDD_HARD_RESET>;
+				qcom,s2-type = <PON_POWER_OFF_TYPE_DVDD_HARD_RESET>;
 				qcom,use-bark;
 			};
 		};
@@ -106,13 +106,18 @@
 			qcom,gpios-disallowed = <3 15 20 22 24 25 26>;
 		};
 
-		pm8998_coincell: qcom,coincell@2800 {
-			compatible = "qcom,qpnp-coincell";
+		pm8998_coincell: coincell@2800 {
+			compatible = "qcom,pm8941-coincell";
 			reg = <0x2800 0x100>;
+
+			qcom,rset-ohms = <2100>;
+			qcom,vset-millivolts = <3000>;
 		};
 
-		pm8998_rtc: qcom,pm8998_rtc {
+		pm8998_rtc: qcom,pm8998_rtc@6000 {
 			compatible = "qcom,pm8941-rtc";
+			reg = <0x6000 0x100>, <0x6100 0x100>;
+			reg-names = "rtc", "alarm";
 			interrupts = <0x0 0x61 0x1 IRQ_TYPE_NONE>;
 		};
 
@@ -124,6 +129,7 @@
 			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
 			interrupt-names = "eoc-int-en-set";
 			qcom,adc-vdd-reference = <1875>;
+			qcom,pmic-revid = <&pm8998_revid>;
 			#io-channel-cells = <1>;
 			io-channel-ranges;
 
@@ -171,7 +177,7 @@
 	};
 
 	qcom,pm8998@1 {
-		compatible = "qcom,spmi-pmic";
+		compatible = "qcom,pm8998", "qcom,spmi-pmic";
 		reg = <0x1 SPMI_USID>;
 		#address-cells = <2>;
 		#size-cells = <0>;
@@ -205,3 +211,5 @@
 		};
 	};
 };
+
+#include "xiaomi-pm8998.dtsi"

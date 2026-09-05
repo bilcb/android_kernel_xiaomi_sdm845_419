@@ -12,4 +12,3 @@
 	compatible = "qcom,sdm845";
 	qcom,board-id = <0 0>;
 };
-

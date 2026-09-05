@@ -8,19 +8,19 @@
 #include <dt-bindings/clock/qcom,gcc-sdm845.h>
 
 &soc {
-	ad_hoc_bus: ad-hoc-bus {
+	ad_hoc_bus: ad-hoc-bus@16e0000 {
 		compatible = "qcom,msm-bus-device";
-		reg = <0x016E0000 0x40000>,
-			<0x1700000 0x40000>,
-			<0x1500000 0x40000>,
-			<0x14E0000 0x40000>,
-			<0x17900000 0x40000>,
-			<0x1380000 0x40000>,
-			<0x1380000 0x40000>,
-			<0x1740000 0x40000>,
-			<0x1620000 0x40000>,
-			<0x1620000 0x40000>,
-			<0x1620000 0x40000>;
+		reg = <0x016e0000 0x15080>,
+			  <0x01700000 0x1f300>,
+			  <0x01500000 0x5080>,
+			  <0x014e0000 0x400>,
+			  <0x17900000 0xd080>,
+			  <0x01380000 0x40000>,
+			  <0x01380000 0x27200>,
+			  <0x01740000 0x1c100>,
+			  <0x01620000 0x18080>,
+			  <0x01620000 0x40000>,
+			  <0x01620000 0x40000>;
 
 		reg-names = "aggre1_noc-base", "aggre2_noc-base",
 			"config_noc-base", "dc_noc-base",
@@ -40,7 +40,7 @@
 			cell-id = <MSM_BUS_RSC_DISP>;
 			label = "disp_rsc";
 			qcom,rsc-dev;
-			qcom,req_state = <3>;
+			qcom,req_state = <2>;
 		};
 
 	/*BCMs*/

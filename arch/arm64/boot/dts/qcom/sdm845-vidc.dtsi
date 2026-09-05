@@ -10,7 +10,7 @@
 &soc {
 	msm_vidc: qcom,vidc@aa00000 {
 		compatible = "qcom,msm-vidc", "qcom,sdm845-vidc";
-		status = "ok";
+		status = "okay";
 		reg = <0xaa00000 0x200000>;
 		interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
 
@@ -52,12 +52,13 @@
 
 		venus_bus_ddr {
 			compatible = "qcom,msm-vidc,bus";
-			label = "venus-ar50-ddr";
+			label = "venus-ddr";
 			qcom,bus-master = <MSM_BUS_MASTER_LLCC>;
 			qcom,bus-slave = <MSM_BUS_SLAVE_EBI_CH0>;
-			qcom,mode = "venus-ar50-ddr";
+			qcom,mode = "venus-ddr";
 			qcom,bus-range-kbps = <1000 3388000>;
 		};
+
 		arm9_bus_ddr {
 			compatible = "qcom,msm-vidc,bus";
 			label = "venus-arm9-ddr";
@@ -66,12 +67,13 @@
 			qcom,mode = "performance";
 			qcom,bus-range-kbps = <1000 1000>;
 		};
+
 		venus_bus_llcc {
 			compatible = "qcom,msm-vidc,bus";
-			label = "venus-ar50-llcc";
+			label = "venus-llcc";
 			qcom,bus-master = <MSM_BUS_MASTER_VIDEO_P0>;
 			qcom,bus-slave = <MSM_BUS_SLAVE_LLCC>;
-			qcom,mode = "venus-ar50-llcc";
+			qcom,mode = "venus-llcc";
 			qcom,bus-range-kbps = <17000 3388000>;
 		};
 

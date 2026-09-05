@@ -3,15 +3,12 @@
  * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
  */
 
-#include <dt-bindings/interrupt-controller/irq.h>
-#include <dt-bindings/input/input.h>
-#include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/spmi/spmi.h>
-#include <dt-bindings/iio/qcom,spmi-vadc.h>
+#include <dt-bindings/interrupt-controller/irq.h>
 
 &spmi_bus {
 	qcom,pm8005@4 {
-		compatible = "qcom,spmi-pmic";
+		compatible = "qcom,pm8005", "qcom,spmi-pmic";
 		reg = <0x4 SPMI_USID>;
 		#address-cells = <2>;
 		#size-cells = <0>;
@@ -43,38 +40,10 @@
 	};
 
 	qcom,pm8005@5 {
-		compatible ="qcom,spmi-pmic";
+		compatible = "qcom,pm8005", "qcom,spmi-pmic";
 		reg = <0x5 SPMI_USID>;
 		#address-cells = <2>;
 		#size-cells = <0>;
-
-		regulator@1400 {
-			compatible = "qcom,qpnp-regulator";
-			reg = <0x1400 0x100>;
-			regulator-name = "pm8005_s1";
-			status = "disabled";
-		};
-
-		regulator@1700 {
-			compatible = "qcom,qpnp-regulator";
-			reg = <0x1700 0x100>;
-			regulator-name = "pm8005_s2";
-			status = "disabled";
-		};
-
-		regulator@1a00 {
-			compatible = "qcom,qpnp-regulator";
-			reg = <0x1a00 0x100>;
-			regulator-name = "pm8005_s3";
-			status = "disabled";
-		};
-
-		regulator@1d00 {
-			compatible = "qcom,qpnp-regulator";
-			reg = <0x1d00 0x100>;
-			regulator-name = "pm8005_s4";
-			status = "disabled";
-		};
 	};
 };
 
@@ -102,3 +71,5 @@
 		};
 	};
 };
+
+#include "xiaomi-pm8005.dtsi"

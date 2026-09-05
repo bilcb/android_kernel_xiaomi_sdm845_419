@@ -31,7 +31,7 @@
 		qcom,panel-ack-disabled;
 
 		qcom,mdss-dsi-display-timings {
-			timing@0 {
+			timing0 {
 				qcom,mdss-dsi-panel-width = <640>;
 				qcom,mdss-dsi-panel-height = <480>;
 				qcom,mdss-dsi-h-front-porch = <8>;

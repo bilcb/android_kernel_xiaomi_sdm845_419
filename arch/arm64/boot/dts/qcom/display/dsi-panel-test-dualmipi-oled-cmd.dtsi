@@ -40,7 +40,7 @@
 		qcom,mdss-dsi-hbp-power-mode;
 		qcom,mdss-dsi-hsa-power-mode;
 		qcom,mdss-dsi-display-timings {
-			timing@0{
+			timing0{
 			};
 		};
 	};

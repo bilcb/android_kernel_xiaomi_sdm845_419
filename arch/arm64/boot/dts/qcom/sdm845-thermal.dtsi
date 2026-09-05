@@ -1,8 +1,3 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * Copyright (c) 2025, Pavel Dubrova <pashadubrova@gmail.com>
- */
-
 #include <dt-bindings/thermal/thermal.h>
 
 &cpufreq_hw {
@@ -49,36 +44,184 @@
 		};
 	};
 
-	lmh_dcvs0: qcom,limits-dcvs@0 {
+	lmh_dcvs0: qcom,limits-dcvs@17d78800 {
 		compatible = "qcom,msm-hw-limits";
 		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-		reg = <0x17d78800 0x1000>,
-		<0x17d43000 0x1000>;
 		qcom,affinity = <0>;
-		#thermal-sensor-cells = <0>;
+		reg = <0x17d78800 0x1000>,
+			<0x17d43000 0x1000>;
+		isens_vref_0p8-supply = <&pm8998_l1>;
+		isens_vref_1p8-supply = <&pm8998_l12>;
 		qcom,no-cooling-device-register;
-		qcom,legacy-lmh-enable;
+		#thermal-sensor-cells = <0>;
 	};
 
-	lmh_dcvs1: qcom,limits-dcvs@1 {
+	lmh_dcvs1: qcom,limits-dcvs@17d70800 {
 		compatible = "qcom,msm-hw-limits";
 		interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
 		qcom,affinity = <1>;
 		reg = <0x17d70800 0x1000>,
-		<0x17d45800 0x1000>;
-		#thermal-sensor-cells = <0>;
-		isens_vref_0p8-supply = <&pm8998_l1_ao>;
-		isens-vref-0p8-settings = <880000 880000 20000>;
+			<0x17d45800 0x1000>;
+		isens_vref_0p8-supply = <&pm8998_l1>;
+		isens_vref_1p8-supply = <&pm8998_l12>;
 		qcom,no-cooling-device-register;
-		qcom,legacy-lmh-enable;
+		#thermal-sensor-cells = <0>;
 	};
 };
 
-#include "sdm845-thermal-modem.dtsi"
-#include "sdm845-thermal-overlay.dtsi"
+&soc {
+	qmi-tmd-devices {
+		compatible = "qcom,qmi-cooling-devices";
 
-&msm_gpu {
-	#cooling-cells = <2>;
+		modem {
+			qcom,instance-id = <0x0>;
+
+			modem_pa: modem_pa {
+				qcom,qmi-dev-name = "pa";
+				#cooling-cells = <2>;
+			};
+
+			modem_proc: modem_proc {
+				qcom,qmi-dev-name = "modem";
+				#cooling-cells = <2>;
+			};
+
+			modem_current: modem_current {
+				qcom,qmi-dev-name = "modem_current";
+				#cooling-cells = <2>;
+			};
+
+			modem_skin: modem_skin {
+				qcom,qmi-dev-name = "modem_skin";
+				#cooling-cells = <2>;
+			};
+
+			modem_vdd: modem_vdd {
+				qcom,qmi-dev-name = "cpuv_restriction_cold";
+				#cooling-cells = <2>;
+			};
+		};
+
+		adsp {
+			qcom,instance-id = <0x1>;
+
+			adsp_vdd: adsp_vdd {
+				qcom,qmi-dev-name = "cpuv_restriction_cold";
+				#cooling-cells = <2>;
+			};
+		};
+
+		cdsp {
+			qcom,instance-id = <0x43>;
+
+			cdsp_vdd: cdsp_vdd {
+				qcom,qmi-dev-name = "cpuv_restriction_cold";
+				#cooling-cells = <2>;
+			};
+		};
+
+		slpi {
+			qcom,instance-id = <0x53>;
+
+			slpi_vdd: slpi_vdd {
+				qcom,qmi-dev-name = "cpuv_restriction_cold";
+				#cooling-cells = <2>;
+			};
+		};
+	};
+};
+
+&pm8998_temp_alarm {
+	cooling-maps {
+		trip0_cpu0 {
+			trip = <&pm8998_trip0>;
+			cooling-device =
+				<&CPU0 (THERMAL_MAX_LIMIT-1)
+					(THERMAL_MAX_LIMIT-1)>;
+		};
+		trip0_cpu1 {
+			trip = <&pm8998_trip0>;
+			cooling-device =
+				<&CPU1 (THERMAL_MAX_LIMIT-1)
+					(THERMAL_MAX_LIMIT-1)>;
+		};
+		trip0_cpu2 {
+			trip = <&pm8998_trip0>;
+			cooling-device =
+				<&CPU2 (THERMAL_MAX_LIMIT-1)
+					(THERMAL_MAX_LIMIT-1)>;
+		};
+		trip0_cpu3 {
+			trip = <&pm8998_trip0>;
+			cooling-device =
+				<&CPU3 (THERMAL_MAX_LIMIT-1)
+					(THERMAL_MAX_LIMIT-1)>;
+		};
+		trip0_cpu4 {
+			trip = <&pm8998_trip0>;
+			cooling-device =
+				<&CPU4 (THERMAL_MAX_LIMIT-1)
+					(THERMAL_MAX_LIMIT-1)>;
+		};
+		trip0_cpu5 {
+			trip = <&pm8998_trip0>;
+			cooling-device =
+				<&CPU5 (THERMAL_MAX_LIMIT-1)
+					(THERMAL_MAX_LIMIT-1)>;
+		};
+		trip0_cpu6 {
+			trip = <&pm8998_trip0>;
+			cooling-device =
+				<&CPU6 (THERMAL_MAX_LIMIT-1)
+					(THERMAL_MAX_LIMIT-1)>;
+		};
+		trip0_cpu7 {
+			trip = <&pm8998_trip0>;
+			cooling-device =
+				<&CPU7 (THERMAL_MAX_LIMIT-1)
+					(THERMAL_MAX_LIMIT-1)>;
+		};
+		trip1_cpu0 {
+			trip = <&pm8998_trip1>;
+			cooling-device =
+				<&cpu0_isolate 1 1>;
+		};
+		trip1_cpu1 {
+			trip = <&pm8998_trip1>;
+			cooling-device =
+				<&cpu1_isolate 1 1>;
+		};
+		trip1_cpu2 {
+			trip = <&pm8998_trip1>;
+			cooling-device =
+				<&cpu2_isolate 1 1>;
+		};
+		trip1_cpu3 {
+			trip = <&pm8998_trip1>;
+			cooling-device =
+				<&cpu3_isolate 1 1>;
+		};
+		trip1_cpu4 {
+			trip = <&pm8998_trip1>;
+			cooling-device =
+				<&cpu4_isolate 1 1>;
+		};
+		trip1_cpu5 {
+			trip = <&pm8998_trip1>;
+			cooling-device =
+				<&cpu5_isolate 1 1>;
+		};
+		trip1_cpu6 {
+			trip = <&pm8998_trip1>;
+			cooling-device =
+				<&cpu6_isolate 1 1>;
+		};
+		trip1_cpu7 {
+			trip = <&pm8998_trip1>;
+			cooling-device =
+				<&cpu7_isolate 1 1>;
+		};
+	};
 };
 
 &thermal_zones {
@@ -717,11 +860,11 @@
 		};
 	};
 
-	lmh-dcvs-01 {
+	lmh-dcvs-00 {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
-		thermal-sensors = <&lmh_dcvs1>;
+		thermal-sensors = <&lmh_dcvs0>;
 		wake-capable-sensor;
 
 		trips {
@@ -733,11 +876,11 @@
 		};
 	};
 
-	lmh-dcvs-00 {
+	lmh-dcvs-01 {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "user_space";
-		thermal-sensors = <&lmh_dcvs0>;
+		thermal-sensors = <&lmh_dcvs1>;
 		wake-capable-sensor;
 
 		trips {

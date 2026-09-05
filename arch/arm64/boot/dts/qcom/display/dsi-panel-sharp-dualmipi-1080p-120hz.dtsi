@@ -34,7 +34,7 @@
 		qcom,mdss-dsi-te-using-te-pin;
 
 		qcom,mdss-dsi-display-timings {
-			timing@0 {
+			timing0 {
 				qcom,mdss-dsi-panel-width = <540>;
 				qcom,mdss-dsi-panel-height = <1920>;
 				qcom,mdss-dsi-h-front-porch = <28>;

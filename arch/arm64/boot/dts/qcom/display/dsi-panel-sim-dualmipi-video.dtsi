@@ -27,7 +27,7 @@
 		qcom,mdss-dsi-qsync-min-refresh-rate = <45>;
 
 		qcom,mdss-dsi-display-timings {
-			timing@0 {
+			timing0 {
 				qcom,mdss-dsi-panel-width = <1280>;
 				qcom,mdss-dsi-panel-height = <1440>;
 				qcom,mdss-dsi-h-front-porch = <120>;

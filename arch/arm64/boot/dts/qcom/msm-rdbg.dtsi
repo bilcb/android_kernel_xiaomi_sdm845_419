@@ -1,5 +1,5 @@
 &soc {
-  /* smp2p information */
+	/* smp2p information */
 	qcom,smp2p_interrupt_rdbg_2_out {
 		compatible = "qcom,smp2p-interrupt-rdbg-2-out";
 		qcom,smem-states = <&smp2p_rdbg2_out 0>;

@@ -16,6 +16,10 @@
 &vendor {
 	bluetooth: bt_wcn3990 {
 		compatible = "qca,wcn3990";
+		qca,bt-reset-gpio = <&tlmm 47 0>; /* BT_EN */
+		qca,wl-reset-gpio = <&tlmm 46 0>; /* WL_EN */
+		qca,bt-sw-ctrl-gpio = <&tlmm 124 0>; /* SW_CTRL */
+
 		qca,bt-vdd-io-supply = <&pm8998_s3>;
 		qca,bt-vdd-xtal-supply = <&pm8998_s5>;
 		qca,bt-vdd-core-supply = <&pm8998_l7>;
@@ -43,8 +47,8 @@
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&key_vol_up_default
-			     &key_cam_snapshot_default
-			     &key_cam_focus_default>;
+				 &key_cam_snapshot_default
+				 &key_cam_focus_default>;
 
 		vol_up {
 			label = "volume_up";
@@ -79,7 +83,7 @@
 };
 
 &labibb {
-	status = "ok";
+	status = "okay";
 	qcom,qpnp-labibb-mode = "lcd";
 };
 
@@ -204,7 +208,7 @@
 	vdda-phy-max-microamp = <62900>;
 	vdda-pll-max-microamp = <18300>;
 
-	status = "ok";
+	status = "okay";
 };
 
 &ufshc_mem {
@@ -219,7 +223,7 @@
 	qcom,vddp-ref-clk-supply = <&pm8998_l2>;
 	qcom,vddp-ref-clk-max-microamp = <100>;
 
-	status = "ok";
+	status = "okay";
 };
 
 &sdhc_2 {
@@ -246,7 +250,7 @@
 
 	cd-gpios = <&tlmm 126 GPIO_ACTIVE_LOW>;
 
-	status = "ok";
+	status = "okay";
 };
 
 &pmi8998_switch1 {
@@ -283,25 +287,25 @@
 };
 
 &smb1355_charger_0 {
-	status = "ok";
+	status = "okay";
 	qcom,disable-ctm;
 };
 
 &smb1355_charger_1 {
-	status = "ok";
+	status = "okay";
 	qcom,disable-ctm;
 };
 
 &qupv3_se9_2uart {
-	status = "ok";
+	status = "okay";
 };
 
 &qupv3_se8_spi {
-	status = "ok";
+	status = "okay";
 };
 
 &qupv3_se3_i2c {
-	status = "ok";
+	status = "okay";
 	nq@28 {
 		compatible = "qcom,nq-nci";
 		reg = <0x28>;
@@ -315,18 +319,18 @@
 		interrupt-names = "nfc_irq";
 		pinctrl-names = "nfc_active", "nfc_suspend";
 		pinctrl-0 = <&nfc_int_active
-			     &nfc_enable_active
-			     &nfc_clk_default>;
+				 &nfc_enable_active
+				 &nfc_clk_default>;
 		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
 	};
 };
 
 &qupv3_se10_i2c {
-	status = "ok";
+	status = "okay";
 };
 
 &qupv3_se6_4uart {
-	status = "ok";
+	status = "okay";
 };
 
 &usb1 {
@@ -334,10 +338,13 @@
 };
 
 &ext_5v_boost {
-	status = "ok";
+	status = "okay";
 };
 
 &pm8998_vadc {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
 	vph_pwr@83 {
 		label = "vph_pwr";
 		reg = <ADC_VPH_PWR>;
@@ -384,6 +391,9 @@
 };
 
 &pm8998_adc_tm {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
 	io-channels = <&pm8998_vadc ADC_VPH_PWR>,
 			<&pm8998_vadc ADC_XO_THERM_PU2>,
 			<&pm8998_vadc ADC_AMUX_THM1_PU2>,
@@ -498,5 +508,5 @@
 };
 
 &wil6210 {
-	status = "ok";
+	status = "okay";
 };

@@ -4,8 +4,9 @@
  */
 
 &soc {
-	tlmm: pinctrl@03400000 {
+	tlmm: pinctrl@3400000 {
 		compatible = "qcom,sdm845-pinctrl";
+		#address-cells = <0>;
 		reg = <0x03400000 0xc00000>, <0x179900F0 0x60>;
 		reg-names = "pinctrl_regs", "spi_cfg_regs";
 		interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
@@ -148,7 +149,7 @@
 
 				config {
 					pins = "gpio21";
-					drive_strength = <2>;
+					drive-strength = <2>;
 					output-high;
 					bias-disable;
 				};
@@ -162,7 +163,7 @@
 
 				config {
 					pins = "gpio21";
-					drive_strength = <2>;
+					drive-strength = <2>;
 					output-low;
 					bias-disable;
 				};
@@ -178,7 +179,7 @@
 
 				config {
 					pins = "gpio23";
-					drive_strength = <2>;
+					drive-strength = <2>;
 					output-high;
 					bias-disable;
 				};
@@ -192,7 +193,7 @@
 
 				config {
 					pins = "gpio23";
-					drive_strength = <2>;
+					drive-strength = <2>;
 					output-low;
 					bias-disable;
 				};
@@ -420,7 +421,7 @@
 				};
 				config {
 					pins = "gpio90";
-					drive_strength = <2>;
+					drive-strength = <2>;
 					bias-disable;
 					output-high;
 				};
@@ -433,7 +434,7 @@
 				};
 				config {
 					pins = "gpio90";
-					drive_strength = <2>;
+					drive-strength = <2>;
 					bias-disable;
 					output-high;
 				};
@@ -2350,7 +2351,7 @@
 				config {
 					pins = "gpio45", "gpio48";
 					drive-strength = <2>;
-					bias-no-pull;
+					bias-disable;
 				};
 			};
 
@@ -3520,7 +3521,7 @@
 			};
 			signals_cfg {
 				pins = "gpio89", "gpio90", "gpio91";
-				drive_strength = <2>;	/* 2 mA */
+				drive-strength = <2>;	/* 2 mA */
 				bias-pull-down;		/* pull down */
 			};
 		};
@@ -3530,7 +3531,7 @@
 			tsif1_sync {
 				pins = "gpio12";	/* TSIF0 SYNC */
 				function = "tsif1_sync";
-				drive_strength = <2>;	/* 2 mA */
+				drive-strength = <2>;	/* 2 mA */
 				bias-pull-down;		/* pull down */
 			};
 		};
@@ -3550,7 +3551,7 @@
 			};
 			signals_cfg {
 				pins = "gpio93", "gpio94", "gpio95";
-				drive_strength = <2>;	/* 2 mA */
+				drive-strength = <2>;	/* 2 mA */
 				bias-pull-down;		/* pull down */
 			};
 		};
@@ -3560,7 +3561,7 @@
 			tsif2_sync {
 				pins = "gpio96";	/* TSIF1 SYNC */
 				function = "tsif2_sync";
-				drive_strength = <2>;	/* 2 mA */
+				drive-strength = <2>;	/* 2 mA */
 				bias-pull-down;		/* pull down */
 			};
 		};
@@ -3733,3 +3734,5 @@
 		};
 	};
 };
+
+#include "xiaomi-sdm845-pinctrl.dtsi"

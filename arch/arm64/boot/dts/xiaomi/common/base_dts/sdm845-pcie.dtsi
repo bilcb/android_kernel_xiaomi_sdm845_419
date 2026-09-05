@@ -1,7 +1,0 @@
-&pcie0 {
-    /delete-property/ qcom,l1-supported;
-};
-
-&pcie1 {
-    /delete-property/ qcom,l1-supported;
-};
