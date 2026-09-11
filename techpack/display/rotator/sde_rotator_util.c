@@ -364,12 +364,28 @@ int sde_mdp_get_plane_sizes(struct sde_mdp_format_params *fmt, u32 w, u32 h,
 			}
 
 			ps->num_planes = 2;
-			ps->ystride[0] = VENUS_Y_STRIDE(cf, w);
-			ps->ystride[1] = VENUS_UV_STRIDE(cf, w);
-			ps->plane_size[0] = VENUS_Y_SCANLINES(cf, h) *
-				ps->ystride[0];
-			ps->plane_size[1] = VENUS_UV_SCANLINES(cf, h) *
-				ps->ystride[1];
+			if (cf == COLOR_FMT_NV12 || cf == COLOR_FMT_NV21) {
+				/*
+				 * sdm845-era vendor blobs size VENUS NV12
+				 * buffers with 128/32 alignment; msm_media_info.h
+				 * uses 512/512 for 64-bit, which would reject
+				 * these buffers as too small.
+				 */
+				ps->ystride[0] = ALIGN(w, 128);
+				ps->ystride[1] = ALIGN(w, 128);
+				ps->plane_size[0] = ALIGN(h, 32) *
+					ps->ystride[0];
+				ps->plane_size[1] =
+					ALIGN(DIV_ROUND_UP(h, 2), 16) *
+					ps->ystride[1];
+			} else {
+				ps->ystride[0] = VENUS_Y_STRIDE(cf, w);
+				ps->ystride[1] = VENUS_UV_STRIDE(cf, w);
+				ps->plane_size[0] = VENUS_Y_SCANLINES(cf, h) *
+					ps->ystride[0];
+				ps->plane_size[1] = VENUS_UV_SCANLINES(cf, h) *
+					ps->ystride[1];
+			}
 		} else if (fmt->format == SDE_PIX_FMT_Y_CBCR_H2V2_P010) {
 			/*
 			 * |<---Y1--->000000<---Y0--->000000|  Plane0
