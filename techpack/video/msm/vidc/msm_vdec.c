@@ -1340,6 +1340,15 @@ int msm_vdec_set_seqchng_at_syncframe(struct msm_vidc_inst *inst)
 	if (!hfi_property.enable)
 		return 0;
 
+	/*
+	 * HFI_PROPERTY_PARAM_VDEC_SEQCHNG_AT_SYNCFRM is not supported
+	 * by the venus 4.x/5.x (AR50) firmware.
+	 */
+	if (inst->core->platform_data->vpu_ver == VPU_VERSION_AR50 ||
+			inst->core->platform_data->vpu_ver == VPU_VERSION_AR50_LITE) {
+		return 0;
+	}
+
 	s_vpr_h(inst->sid, "%s: %#x\n", __func__, hfi_property.enable);
 	rc = call_hfi_op(hdev, session_set_property, inst->session,
 		HFI_PROPERTY_PARAM_VDEC_SEQCHNG_AT_SYNCFRM, &hfi_property,
@@ -1412,18 +1421,38 @@ int msm_vdec_set_extradata(struct msm_vidc_inst *inst)
 	msm_comm_set_extradata(inst, display_info, 0x1);
 
 	if (codec == V4L2_PIX_FMT_VP9 || codec == V4L2_PIX_FMT_HEVC) {
-		msm_comm_set_extradata(inst,
-			HFI_PROPERTY_PARAM_VDEC_HDR10_HIST_EXTRADATA, 0x1);
+		/*
+		 * HFI_PROPERTY_PARAM_VDEC_HDR10_HIST_EXTRADATA is not
+		 * supported by the venus 4.x/5.x (AR50) firmware;
+		 * sending it makes the firmware assert and kill the session.
+		 */
+		if (inst->core->platform_data->vpu_ver != VPU_VERSION_AR50 &&
+				inst->core->platform_data->vpu_ver !=
+					VPU_VERSION_AR50_LITE) {
+			msm_comm_set_extradata(inst,
+				HFI_PROPERTY_PARAM_VDEC_HDR10_HIST_EXTRADATA, 0x1);
+		}
 	}
 
 	msm_comm_set_extradata(inst,
 		HFI_PROPERTY_PARAM_VDEC_NUM_CONCEALED_MB, 0x1);
 	if (codec == V4L2_PIX_FMT_HEVC) {
-		msm_comm_set_extradata(inst,
-			HFI_PROPERTY_PARAM_VDEC_MASTER_DISP_COL_SEI_EXTRADATA,
-			0x1);
-		msm_comm_set_extradata(inst,
-			HFI_PROPERTY_PARAM_VDEC_CLL_SEI_EXTRADATA, 0x1);
+		/*
+		 * HFI_PROPERTY_PARAM_VDEC_MASTER_DISP_COL_SEI_EXTRADATA and
+		 * HFI_PROPERTY_PARAM_VDEC_CLL_SEI_EXTRADATA are not
+		 * supported by the venus 4.x/5.x (AR50) firmware;
+		 * sending them makes the firmware return SESSION_ERROR
+		 * and kill the session.
+		 */
+		if (inst->core->platform_data->vpu_ver != VPU_VERSION_AR50 &&
+				inst->core->platform_data->vpu_ver !=
+					VPU_VERSION_AR50_LITE) {
+			msm_comm_set_extradata(inst,
+				HFI_PROPERTY_PARAM_VDEC_MASTER_DISP_COL_SEI_EXTRADATA,
+				0x1);
+			msm_comm_set_extradata(inst,
+				HFI_PROPERTY_PARAM_VDEC_CLL_SEI_EXTRADATA, 0x1);
+		}
 		msm_comm_set_extradata(inst,
 			HFI_PROPERTY_PARAM_VDEC_STREAM_USERDATA_EXTRADATA,
 			0x1);

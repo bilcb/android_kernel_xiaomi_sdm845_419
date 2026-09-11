@@ -1441,11 +1441,24 @@ static int msm_vidc_decide_work_mode_ar50(struct msm_vidc_inst *inst)
 decision_done:
 
 	inst->clk_data.work_mode = pdata.video_work_mode;
-	rc = call_hfi_op(hdev, session_set_property,
-			(void *)inst->session, HFI_PROPERTY_PARAM_WORK_MODE,
-			(void *)&pdata, sizeof(pdata));
-	if (rc)
-		s_vpr_e(inst->sid, "Failed to configure Work Mode\n");
+	/*
+	 * venus 4.x/5.x firmware (AR50) does not support
+	 * HFI_PROPERTY_PARAM_WORK_MODE; sending it makes the firmware
+	 * return UNSUPPORTED_PROPERTY and kill the session.
+	 * Keep work_mode only for local clock/buffer calculations.
+	 */
+	if (inst->core->platform_data->vpu_ver != VPU_VERSION_AR50 &&
+			inst->core->platform_data->vpu_ver !=
+				VPU_VERSION_AR50_LITE) {
+		rc = call_hfi_op(hdev, session_set_property,
+				(void *)inst->session, HFI_PROPERTY_PARAM_WORK_MODE,
+				(void *)&pdata, sizeof(pdata));
+		if (rc) {
+			s_vpr_e(inst->sid, "Failed to configure Work Mode\n");
+		}
+	} else {
+		rc = 0;
+	}
 
 	/* For WORK_MODE_1, set Low Latency mode by default to HW. */
 

@@ -2525,6 +2525,17 @@ int msm_venc_set_request_keyframe(struct msm_vidc_inst *inst)
 	}
 	hdev = inst->core->device;
 
+	/*
+	 * HFI_PROPERTY_CONFIG_VENC_REQUEST_SYNC_FRAME is not supported
+	 * by the venus 4.x/5.x (AR50) firmware; sending it makes the
+	 * firmware return SESSION_ERROR and kill the session.
+	 */
+	if (inst->core->platform_data->vpu_ver == VPU_VERSION_AR50 ||
+			inst->core->platform_data->vpu_ver ==
+				VPU_VERSION_AR50_LITE) {
+		return 0;
+	}
+
 	s_vpr_h(inst->sid, "%s\n", __func__);
 	rc = call_hfi_op(hdev, session_set_property, inst->session,
 		HFI_PROPERTY_CONFIG_VENC_REQUEST_SYNC_FRAME, NULL, 0);
@@ -3361,6 +3372,17 @@ int msm_venc_set_bitrate_savings_mode(struct msm_vidc_inst *inst)
 	}
 	hdev = inst->core->device;
 
+	/*
+	 * HFI_PROPERTY_PARAM_VENC_BITRATE_SAVINGS is not supported
+	 * by the venus 4.x/5.x (AR50) firmware; sending it makes the
+	 * firmware return SESSION_ERROR and kill the session.
+	 */
+	if (inst->core->platform_data->vpu_ver == VPU_VERSION_AR50 ||
+			inst->core->platform_data->vpu_ver ==
+				VPU_VERSION_AR50_LITE) {
+		return 0;
+	}
+
 	cac = get_ctrl(inst, V4L2_CID_MPEG_VIDC_VENC_BITRATE_SAVINGS);
 	codec = get_v4l2_codec(inst);
 	profile = get_ctrl(inst, V4L2_CID_MPEG_VIDEO_HEVC_PROFILE);
@@ -3450,6 +3472,17 @@ int msm_venc_set_chroma_qp_offset(struct msm_vidc_inst *inst)
 	/* TODO: Remove this check after firmware support added for 8-bit */
 	if (inst->bit_depth == MSM_VIDC_BIT_DEPTH_8)
 		return 0;
+
+	/*
+	 * HFI_PROPERTY_PARAM_HEVC_PPS_CB_CR_OFFSET is not supported
+	 * by the venus 4.x/5.x (AR50) firmware; sending it makes the
+	 * firmware return SESSION_ERROR and kill the session.
+	 */
+	if (inst->core->platform_data->vpu_ver == VPU_VERSION_AR50 ||
+			inst->core->platform_data->vpu_ver ==
+				VPU_VERSION_AR50_LITE) {
+		return 0;
+	}
 
 	rc = call_hfi_op(hdev, session_set_property, inst->session,
 		HFI_PROPERTY_PARAM_HEVC_PPS_CB_CR_OFFSET, &chroma_qp,
@@ -3947,6 +3980,16 @@ int msm_venc_set_dynamic_flip(struct msm_vidc_inst *inst)
 
 	dynamic_flip = v4l2_to_hfi_flip(inst);
 	s_vpr_h(inst->sid, "Dynamic flip = %d\n", dynamic_flip);
+	/*
+	 * HFI_PROPERTY_CONFIG_VPE_FLIP is not supported
+	 * by the venus 4.x/5.x (AR50) firmware; sending it makes the
+	 * firmware return SESSION_ERROR and kill the session.
+	 */
+	if (inst->core->platform_data->vpu_ver == VPU_VERSION_AR50 ||
+			inst->core->platform_data->vpu_ver ==
+				VPU_VERSION_AR50_LITE) {
+		return 0;
+	}
 	rc = call_hfi_op(hdev, session_set_property,
 				(void *)inst->session,
 				HFI_PROPERTY_CONFIG_VPE_FLIP,
@@ -4453,9 +4496,19 @@ int msm_venc_set_extradata(struct msm_vidc_inst *inst)
 		msm_comm_set_extradata(inst,
 			HFI_PROPERTY_PARAM_VENC_ROI_QP_EXTRADATA, 0x0);
 		if (codec == V4L2_PIX_FMT_HEVC) {
-			msm_comm_set_extradata(inst,
-			HFI_PROPERTY_PARAM_VENC_HDR10PLUS_METADATA_EXTRADATA,
-			0x0);
+			/*
+			 * HFI_PROPERTY_PARAM_VENC_HDR10PLUS_METADATA_EXTRADATA
+			 * is not supported by the venus 4.x/5.x (AR50)
+			 * firmware; sending it makes the firmware return
+			 * SESSION_ERROR and kill the session.
+			 */
+			if (inst->core->platform_data->vpu_ver != VPU_VERSION_AR50 &&
+					inst->core->platform_data->vpu_ver !=
+						VPU_VERSION_AR50_LITE) {
+				msm_comm_set_extradata(inst,
+				HFI_PROPERTY_PARAM_VENC_HDR10PLUS_METADATA_EXTRADATA,
+				0x0);
+			}
 		}
 	}
 
@@ -4475,10 +4528,31 @@ int msm_venc_set_extradata(struct msm_vidc_inst *inst)
 	if (inst->prop.extradata_ctrls & EXTRADATA_ENC_INPUT_HDR10PLUS) {
 		// Enable HDR10+ Extradata
 		if (codec == V4L2_PIX_FMT_HEVC) {
-			msm_comm_set_extradata(inst,
-			HFI_PROPERTY_PARAM_VENC_HDR10PLUS_METADATA_EXTRADATA,
-			0x1);
+			/*
+			 * HFI_PROPERTY_PARAM_VENC_HDR10PLUS_METADATA_EXTRADATA
+			 * is not supported by the venus 4.x/5.x (AR50)
+			 * firmware; sending it makes the firmware return
+			 * SESSION_ERROR and kill the session.
+			 */
+			if (inst->core->platform_data->vpu_ver != VPU_VERSION_AR50 &&
+					inst->core->platform_data->vpu_ver !=
+						VPU_VERSION_AR50_LITE) {
+				msm_comm_set_extradata(inst,
+				HFI_PROPERTY_PARAM_VENC_HDR10PLUS_METADATA_EXTRADATA,
+				0x1);
+			}
 		}
+	}
+
+	/*
+	 * HFI_PROPERTY_PARAM_VENC_CVP_METADATA_EXTRADATA is not
+	 * supported by the venus 4.x/5.x (AR50) firmware; sending it
+	 * makes the firmware return SESSION_ERROR and kill the session.
+	 */
+	if (inst->core->platform_data->vpu_ver == VPU_VERSION_AR50 ||
+			inst->core->platform_data->vpu_ver ==
+				VPU_VERSION_AR50_LITE) {
+		inst->prop.extradata_ctrls &= ~EXTRADATA_ENC_INPUT_CVP;
 	}
 
 	if (inst->prop.extradata_ctrls & EXTRADATA_ENC_INPUT_CVP) {
@@ -4514,6 +4588,17 @@ int msm_venc_set_lossless(struct msm_vidc_inst *inst)
 
 	if (inst->rc_type != RATE_CONTROL_LOSSLESS)
 		return 0;
+
+	/*
+	 * HFI_PROPERTY_PARAM_VENC_LOSSLESS_ENCODING is not supported
+	 * by the venus 4.x/5.x (AR50) firmware; sending it makes the
+	 * firmware return SESSION_ERROR and kill the session.
+	 */
+	if (inst->core->platform_data->vpu_ver == VPU_VERSION_AR50 ||
+			inst->core->platform_data->vpu_ver ==
+				VPU_VERSION_AR50_LITE) {
+		return 0;
+	}
 
 	s_vpr_h(inst->sid, "%s: enable lossless encoding\n", __func__);
 	enable.enable = 1;

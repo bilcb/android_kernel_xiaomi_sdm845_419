@@ -896,6 +896,133 @@ static struct msm_vidc_codec_capability kona_capabilities[] = {
 	                            V4L2_MPEG_VIDEO_HEVC_LEVEL_5},
 };
 
+static struct msm_vidc_codec_capability sdm845_capabilities[] = {
+	/* {cap_type, domains, codecs, min, max, step_size, default_value,} */
+
+	/* ===== Decoder common (H264/HEVC/VP8) ===== */
+	{CAP_FRAME_WIDTH, DEC, H264|HEVC|VP8, 96, 4096, 1, 1920},
+	{CAP_FRAME_HEIGHT, DEC, H264|HEVC|VP8, 96, 4096, 1, 1080},
+	{CAP_MBS_PER_FRAME, DEC, H264|HEVC|VP8, 1, 36864, 1, 36864},
+	{CAP_MBS_PER_SECOND, DEC, H264|HEVC, 1, 2073600, 1, 2073600},
+	{CAP_FRAMERATE, DEC, H264|HEVC, 1, 480, 1, 30},
+	{CAP_BITRATE, DEC, H264|HEVC|VP8, 1, 120000000, 1, 20000000},
+	{CAP_SCALE_X, DEC, H264|HEVC|VP8, 4096, 65536, 1, 4096},
+	{CAP_SCALE_Y, DEC, H264|HEVC|VP8, 4096, 65536, 1, 4096},
+	{CAP_H264_LEVEL, DEC, H264, V4L2_MPEG_VIDEO_H264_LEVEL_1_0,
+	                            V4L2_MPEG_VIDEO_H264_LEVEL_5_2, 1,
+	                            V4L2_MPEG_VIDEO_H264_LEVEL_5_0},
+	{CAP_HEVC_LEVEL, DEC, HEVC, V4L2_MPEG_VIDEO_HEVC_LEVEL_1,
+	                            V4L2_MPEG_VIDEO_HEVC_LEVEL_6, 1,
+	                            V4L2_MPEG_VIDEO_HEVC_LEVEL_5},
+
+	/* ===== VP8 decoder (fw reports 4K@30) ===== */
+	{CAP_MBS_PER_SECOND, DEC, VP8, 1, 1036800, 1, 1036800},
+	{CAP_FRAMERATE, DEC, VP8, 1, 240, 1, 30},
+
+	/* ===== VP9 decoder ===== */
+	{CAP_FRAME_WIDTH, DEC, VP9, 96, 4096, 1, 1920},
+	{CAP_FRAME_HEIGHT, DEC, VP9, 96, 4096, 1, 1080},
+	{CAP_MBS_PER_FRAME, DEC, VP9, 1, 36864, 1, 36864},
+	{CAP_MBS_PER_SECOND, DEC, VP9, 1, 2073600, 1, 2073600},
+	{CAP_FRAMERATE, DEC, VP9, 1, 480, 1, 30},
+	{CAP_BITRATE, DEC, VP9, 1, 120000000, 1, 20000000},
+	{CAP_SCALE_X, DEC, VP9, 4096, 65536, 1, 4096},
+	{CAP_SCALE_Y, DEC, VP9, 4096, 65536, 1, 4096},
+
+	/* ===== MPEG2 decoder ===== */
+	{CAP_FRAME_WIDTH, DEC, MPEG2, 96, 1920, 1, 1920},
+	{CAP_FRAME_HEIGHT, DEC, MPEG2, 96, 1920, 1, 1080},
+	{CAP_MBS_PER_FRAME, DEC, MPEG2, 1, 8160, 1, 8160},
+	{CAP_MBS_PER_SECOND, DEC, MPEG2, 1, 244800, 1, 244800},
+	{CAP_FRAMERATE, DEC, MPEG2, 1, 30, 1, 30},
+	{CAP_BITRATE, DEC, MPEG2, 1, 40000000, 1, 20000000},
+	{CAP_SCALE_X, DEC, MPEG2, 4096, 65536, 1, 4096},
+	{CAP_SCALE_Y, DEC, MPEG2, 4096, 65536, 1, 4096},
+
+	/* ===== Encoder common (H264/HEVC) ===== */
+	{CAP_FRAME_WIDTH, ENC, H264, 96, 4096, 16, 1920},
+	{CAP_FRAME_HEIGHT, ENC, H264, 96, 4096, 16, 1080},
+	{CAP_MBS_PER_FRAME, ENC, H264, 1, 36864, 1, 36864},
+	{CAP_MBS_PER_SECOND, ENC, H264|HEVC, 1, 1036800, 1, 1036800},
+	{CAP_FRAMERATE, ENC, H264, 1, 480, 1, 30},
+	{CAP_BITRATE, ENC, H264|HEVC, 1, 120000000, 1, 20000000},
+	{CAP_PEAKBITRATE, ENC, H264|HEVC, 32000, 160000000, 1, 20000000},
+	{CAP_SCALE_X, ENC, H264|HEVC|VP8, 8192, 65536, 1, 8192},
+	{CAP_SCALE_Y, ENC, H264|HEVC|VP8, 8192, 65536, 1, 8192},
+	{CAP_BFRAME, ENC, H264|HEVC, 0, 1, 1, 0},
+	{CAP_HIER_P_NUM_ENH_LAYERS, ENC, H264|HEVC, 0, 5, 1, 0},
+	{CAP_HIER_P_HYBRID_NUM_ENH_LAYERS, ENC, H264|HEVC, 0, 5, 1, 0},
+	{CAP_LTR_COUNT, ENC, H264|HEVC, 0, 4, 1, 0},
+	{CAP_I_FRAME_QP, ENC, H264, 0, 51, 1, 10},
+	{CAP_P_FRAME_QP, ENC, H264, 0, 51, 1, 20},
+	{CAP_B_FRAME_QP, ENC, H264, 0, 51, 1, 20},
+	{CAP_SLICE_BYTE, ENC, H264|HEVC, 512, 500000, 1, 10},
+	{CAP_SLICE_MB, ENC, H264|HEVC, 1, 34560, 1, 10},
+	{CAP_LCU_SIZE, ENC, H264, 16, 16, 1, 16},
+	{CAP_RATE_CONTROL_MODES, ENC, H264|HEVC, 0x1000001, 0x1000005, 1, 0x1000003},
+	{CAP_CABAC_BITRATE, ENC, H264, 1, 120000000, 1, 20000000},
+	{CAP_H264_LEVEL, ENC, H264, V4L2_MPEG_VIDEO_H264_LEVEL_1_0,
+	                            V4L2_MPEG_VIDEO_H264_LEVEL_5_2, 1,
+	                            V4L2_MPEG_VIDEO_H264_LEVEL_5_0},
+
+	/* ===== HEVC encoder ===== */
+	{CAP_FRAME_WIDTH, ENC, HEVC, 96, 7680, 1, 1920},
+	{CAP_FRAME_HEIGHT, ENC, HEVC, 96, 7680, 1, 1080},
+	{CAP_MBS_PER_FRAME, ENC, HEVC, 1, 230400, 1, 36864},
+	{CAP_FRAMERATE, ENC, HEVC, 1, 480, 1, 30},
+	{CAP_I_FRAME_QP, ENC, HEVC, 0, 63, 1, 10},
+	{CAP_P_FRAME_QP, ENC, HEVC, 0, 63, 1, 20},
+	{CAP_B_FRAME_QP, ENC, HEVC, 0, 63, 1, 20},
+	{CAP_LCU_SIZE, ENC, HEVC, 16, 16, 1, 16},
+	{CAP_BLUR_WIDTH, ENC, HEVC, 96, 4096, 16, 1920},
+	{CAP_BLUR_HEIGHT, ENC, HEVC, 96, 4096, 16, 1080},
+	{CAP_HEVC_LEVEL, ENC, HEVC, V4L2_MPEG_VIDEO_HEVC_LEVEL_1,
+	                            V4L2_MPEG_VIDEO_HEVC_LEVEL_6, 1,
+	                            V4L2_MPEG_VIDEO_HEVC_LEVEL_5},
+
+	/* ===== VP8 encoder ===== */
+	{CAP_FRAME_WIDTH, ENC, VP8, 96, 4096, 1, 1920},
+	{CAP_FRAME_HEIGHT, ENC, VP8, 96, 4096, 1, 1080},
+	{CAP_MBS_PER_FRAME, ENC, VP8, 1, 36864, 1, 36864},
+	{CAP_MBS_PER_SECOND, ENC, VP8, 1, 1036800, 1, 1036800},
+	{CAP_FRAMERATE, ENC, VP8, 1, 240, 1, 30},
+	{CAP_BITRATE, ENC, VP8, 1, 120000000, 1, 20000000},
+	{CAP_PEAKBITRATE, ENC, VP8, 32000, 160000000, 1, 20000000},
+	{CAP_RATE_CONTROL_MODES, ENC, VP8, 0x1000001, 0x1000005, 1, 0x1000003},
+	{CAP_BFRAME, ENC, VP8, 0, 0, 1, 0},
+	{CAP_HIER_P_NUM_ENH_LAYERS, ENC, VP8, 0, 3, 1, 0},
+	{CAP_LTR_COUNT, ENC, VP8, 0, 2, 1, 0},
+	{CAP_I_FRAME_QP, ENC, VP8, 0, 127, 1, 20},
+	{CAP_P_FRAME_QP, ENC, VP8, 0, 127, 1, 40},
+	{CAP_LCU_SIZE, ENC, VP8, 16, 16, 1, 16},
+	{CAP_BLUR_WIDTH, ENC, VP8, 96, 4096, 16, 1920},
+	{CAP_BLUR_HEIGHT, ENC, VP8, 96, 4096, 16, 1080},
+
+	/* ===== Secure usecase ===== */
+	{CAP_SECURE_FRAME_WIDTH, DOMAINS_ALL, CODECS_ALL, 96, 4096, 1, 1920},
+	{CAP_SECURE_FRAME_HEIGHT, DOMAINS_ALL, CODECS_ALL, 96, 4096, 1, 1080},
+	{CAP_SECURE_MBS_PER_FRAME, DOMAINS_ALL, CODECS_ALL, 1, 36864, 1, 8160},
+	{CAP_SECURE_BITRATE, DOMAINS_ALL, CODECS_ALL, 1, 40000000, 1, 20000000},
+
+	/* ===== Batch Mode Decode ===== */
+	{CAP_BATCH_MAX_MB_PER_FRAME, DEC, CODECS_ALL, 64, 8160, 1, 8160},
+	{CAP_BATCH_MAX_FPS, DEC, CODECS_ALL, 1, 30, 1, 30},
+
+	/* ===== Lossless encoding ===== */
+	{CAP_LOSSLESS_FRAME_WIDTH, ENC, H264|HEVC, 96, 4096, 1, 1920},
+	{CAP_LOSSLESS_FRAME_HEIGHT, ENC, H264|HEVC, 96, 4096, 1, 1080},
+	{CAP_LOSSLESS_MBS_PER_FRAME, ENC, H264|HEVC, 1, 36864, 1, 8160},
+
+	/* ===== All intra encoding ===== */
+	{CAP_ALLINTRA_MAX_FPS, ENC, H264|HEVC, 1, 480, 1, 30},
+
+	/* ===== Image specific ===== */
+	{CAP_HEVC_IMAGE_FRAME_WIDTH, ENC, HEVC, 128, 512, 1, 512},
+	{CAP_HEVC_IMAGE_FRAME_HEIGHT, ENC, HEVC, 128, 512, 1, 512},
+	{CAP_HEIC_IMAGE_FRAME_WIDTH, ENC, HEVC, 512, 7680, 1, 7680},
+	{CAP_HEIC_IMAGE_FRAME_HEIGHT, ENC, HEVC, 512, 7680, 1, 7680},
+};
+
 /*
  * Custom conversion coefficients for resolution: 176x144 negative
  * coeffs are converted to s4.9 format
@@ -1706,11 +1833,19 @@ static struct msm_vidc_common_data sdm845_common_data[] = {
 	},
 	{
 		.key = "qcom,max-secure-instances",
-		.value = 5,
+		.value = 2,
 	},
 	{
 		.key = "qcom,max-hw-load",
-		.value = 3133440,	/* 4096x2176@90 */
+		.value = 3110400,	/* 4096x2160@90 */
+	},
+	{
+		.key = "qcom,max-image-load",
+		.value = 230400, /* ((7680x7680)/256)@1fps, HEVC enc max */
+	},
+	{
+		.key = "qcom,max-mbpf",
+		.value = 65280,/* ((3840x2176)/256) x 2 */
 	},
 	{
 		.key = "qcom,max-hq-mbs-per-frame",
@@ -1730,19 +1865,43 @@ static struct msm_vidc_common_data sdm845_common_data[] = {
 	},
 	{
 		.key = "qcom,power-collapse-delay",
-		.value = 500,
+		.value = 1500,
 	},
 	{
 		.key = "qcom,hw-resp-timeout",
-		.value = 250,
+		.value = 1000,
 	},
 	{
 		.key = "qcom,debug-timeout",
 		.value = 0,
 	},
 	{
+		.key = "qcom,decode-batching",
+		.value = 1,
+	},
+	{
+		.key = "qcom,batch-timeout",
+		.value = 200,
+	},
+	{
 		.key = "qcom,dcvs",
 		.value = 1,
+	},
+	{
+		.key = "qcom,fw-cycles",
+		.value = 733003,
+	},
+	{
+		.key = "qcom,fw-vpp-cycles",
+		.value = 225975,
+	},
+	{
+		.key = "qcom,ubwc_stats_in_fbd",
+		.value = 0,
+	},
+	{
+		.key = "qcom,vpp_delay_supported",
+		.value = 0,
 	},
 };
 
@@ -2035,6 +2194,10 @@ static struct msm_vidc_platform_data sdm845_data = {
 	.vpu_ver = VPU_VERSION_AR50,
 	.num_vpp_pipes = 0x1,
 	.ubwc_config = 0x0,
+	.codecs = default_codecs,
+	.codecs_count = ARRAY_SIZE(default_codecs),
+	.codec_caps = sdm845_capabilities,
+	.codec_caps_count = ARRAY_SIZE(sdm845_capabilities),
 	.max_inst_count = MAX_SUPPORTED_INSTANCES,
 };
 
@@ -2192,7 +2355,13 @@ void *vidc_get_drv_data(struct device *dev)
 			goto exit;
 	}
 
-	if (!strcmp(match->compatible, "qcom,sdm670-vidc")) {
+	if (!strcmp(match->compatible, "qcom,sdm845-vidc")) {
+		if (driver_data->sku_version == SKU_VERSION_1) {
+			driver_data->common_data = sdm845_common_data;
+			driver_data->common_data_length =
+					ARRAY_SIZE(sdm845_common_data);
+		}
+	} else if (!strcmp(match->compatible, "qcom,sdm670-vidc")) {
 		if (driver_data->sku_version == SKU_VERSION_1) {
 			driver_data->common_data = sdm670_common_data_v1;
 			driver_data->common_data_length =

@@ -1060,6 +1060,22 @@ u32 msm_vidc_calculate_enc_output_frame_size(struct msm_vidc_inst *inst)
 		f->fmt.pix_mp.pixelformat == V4L2_PIX_FMT_HEVC)
 		frame_size = frame_size + (frame_size >> 2);
 
+	/*
+	 * The YUV/2 sizing above is tuned for newer firmware; the
+	 * venus 4.x/5.x (AR50) firmware rejects encoder output
+	 * buffers smaller than a luma plane in FillThisBuffer, so
+	 * clamp the size up to ALIGN(w, 32) * ALIGN(h, 32) here.
+	 */
+	if (inst->core->platform_data->vpu_ver == VPU_VERSION_AR50 ||
+		inst->core->platform_data->vpu_ver == VPU_VERSION_AR50_LITE) {
+		u32 luma_size = ALIGN(f->fmt.pix_mp.width, 32) *
+				ALIGN(f->fmt.pix_mp.height, 32);
+
+		if (frame_size < luma_size) {
+			frame_size = luma_size;
+		}
+	}
+
 calc_done:
 	return ALIGN(frame_size, SZ_4K);
 }
