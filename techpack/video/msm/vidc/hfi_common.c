@@ -133,6 +133,20 @@ struct venus_hfi_vpu_ops vpu4_ops = {
 	.boot_firmware = __boot_firmware_common,
 };
 
+struct venus_hfi_vpu_ops ar50_ops = {
+	.interrupt_init = __interrupt_init_ar50,
+	.setup_ucregion_memmap = __setup_ucregion_memory_map_ar50,
+	.clock_config_on_enable = NULL,
+	.reset_ahb2axi_bridge = NULL,
+	.power_off = __power_off_ar50,
+	.prepare_pc = __prepare_pc_ar50,
+	.raise_interrupt = __raise_interrupt_ar50,
+	.watchdog = __watchdog_common,
+	.noc_error_info = __noc_error_info_common,
+	.core_clear_interrupt = __core_clear_interrupt_ar50,
+	.boot_firmware = __boot_firmware_ar50,
+};
+
 struct venus_hfi_vpu_ops ar50_lite_ops = {
 	.interrupt_init = __interrupt_init_ar50_lt,
 	.setup_ucregion_memmap = __setup_ucregion_memory_map_ar50_lt,
@@ -4769,7 +4783,7 @@ static int __initialize_packetization(struct venus_hfi_device *device)
 void __init_venus_ops(struct venus_hfi_device *device)
 {
 	if (device->res->vpu_ver == VPU_VERSION_AR50)
-		device->vpu_ops = &vpu4_ops;
+		device->vpu_ops = &ar50_ops;
         else if (device->res->vpu_ver == VPU_VERSION_AR50_LITE)
                 device->vpu_ops = &ar50_lite_ops;
 	else if (device->res->vpu_ver == VPU_VERSION_IRIS1)

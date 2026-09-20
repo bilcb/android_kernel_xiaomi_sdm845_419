@@ -220,6 +220,8 @@ struct msm_vidc_bus_data {
 
 int calc_bw_ar50lt(struct vidc_bus_vote_data *vidc_data);
 
+int calc_bw_ar50(struct vidc_bus_vote_data *vidc_data);
+
 int calc_bw_iris1(struct vidc_bus_vote_data *vidc_data);
 
 int calc_bw_iris2(struct vidc_bus_vote_data *vidc_data);

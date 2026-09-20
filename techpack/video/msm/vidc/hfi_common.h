@@ -302,6 +302,12 @@ int __prepare_pc(struct venus_hfi_device *device);
 
 /* AR50 specific */
 void __interrupt_init_ar50(struct venus_hfi_device *device, u32 sid);
+void __setup_ucregion_memory_map_ar50(struct venus_hfi_device *device, u32 sid);
+void __power_off_ar50(struct venus_hfi_device *device);
+int __prepare_pc_ar50(struct venus_hfi_device *device);
+void __raise_interrupt_ar50(struct venus_hfi_device *device, u32 sid);
+void __core_clear_interrupt_ar50(struct venus_hfi_device *device);
+int __boot_firmware_ar50(struct venus_hfi_device *device, u32 sid);
 /* IRIS1 specific */
 void __interrupt_init_iris1(struct venus_hfi_device *device, u32 sid);
 void __setup_dsp_uc_memmap_iris1(struct venus_hfi_device *device);

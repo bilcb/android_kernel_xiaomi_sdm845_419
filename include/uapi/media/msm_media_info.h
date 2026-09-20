@@ -4,19 +4,12 @@
 
 #include <asm/bitsperlong.h>
 
-#if __BITS_PER_LONG == 64
+#if __BITS_PER_LONG == 64 && defined(VENUS_USE_64BIT_ALIGNMENT)
 #define NV12_STRIDE_ALIGNMENT 512
 #define NV12_SCANLINE_ALIGNMENT 512
 #else
 #define NV12_STRIDE_ALIGNMENT 128
 #define NV12_SCANLINE_ALIGNMENT 32
-#endif
-
-#ifdef VENUS_USE_64BIT_ALIGNMENT
-#undef NV12_STRIDE_ALIGNMENT
-#undef NV12_SCANLINE_ALIGNMENT
-#define NV12_STRIDE_ALIGNMENT 512
-#define NV12_SCANLINE_ALIGNMENT 512
 #endif
 
 /* Width and Height should be multiple of 16 */

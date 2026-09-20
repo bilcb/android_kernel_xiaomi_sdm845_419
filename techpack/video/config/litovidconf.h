@@ -4,3 +4,4 @@
  */
 
 #define CONFIG_MSM_VIDC_V4L2 1
+#define VENUS_USE_64BIT_ALIGNMENT 1

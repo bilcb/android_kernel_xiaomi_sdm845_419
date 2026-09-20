@@ -30,8 +30,14 @@ struct msm_vidc_core_ops core_ops_ar50 = {
 	.calc_freq = msm_vidc_calc_freq_ar50,
 	.decide_work_route = NULL,
 	.decide_work_mode = msm_vidc_decide_work_mode_ar50,
-	.decide_core_and_power_mode = NULL,
-	.calc_bw = NULL,
+	/* Naples is single-core; pin CORE_ID_1 and select encoder
+	 * perf/power-save mode from the HQ thresholds. */
+	.decide_core_and_power_mode =
+		msm_vidc_decide_core_and_power_mode_ar50,
+	/* AR50 has no dedicated DDR calc; reuse the Venus4 worst-case
+	 * model via the Naples bus file (which additionally votes the
+	 * venus-llcc path that LITE lacks). */
+	.calc_bw = calc_bw_ar50,
 };
 
 struct msm_vidc_core_ops core_ops_ar50lt = {
@@ -604,6 +610,7 @@ static unsigned long msm_vidc_calc_freq_ar50(struct msm_vidc_inst *inst,
 	struct allowed_clock_rates_table *allowed_clks_tbl = NULL;
 	u64 rate = 0, fps;
 	struct clock_data *dcvs = NULL;
+	u32 operating_rate, vsp_factor_num = 10, vsp_factor_den = 7;
 
 	core = inst->core;
 	dcvs = &inst->clk_data;
@@ -633,8 +640,15 @@ static unsigned long msm_vidc_calc_freq_ar50(struct msm_vidc_inst *inst,
 
 		vsp_cycles = mbs_per_second * inst->clk_data.entry->vsp_cycles;
 
-		/* 10 / 7 is overhead factor */
-		vsp_cycles += (inst->clk_data.bitrate * 10) / 7;
+		/* bitrate is based on fps, scale it using operating rate */
+		operating_rate = inst->clk_data.operating_rate >> 16;
+		if (operating_rate > (inst->clk_data.frame_rate >> 16) &&
+			(inst->clk_data.frame_rate >> 16)) {
+			vsp_factor_num *= operating_rate;
+			vsp_factor_den *= inst->clk_data.frame_rate >> 16;
+		}
+		vsp_cycles += div_u64(((u64)inst->clk_data.bitrate *
+					vsp_factor_num), vsp_factor_den);
 	} else if (inst->session_type == MSM_VIDC_DECODER) {
 		vpp_cycles = mbs_per_second * inst->clk_data.entry->vpp_cycles;
 		/* 21 / 20 is minimum overhead factor */
@@ -1441,11 +1455,22 @@ static int msm_vidc_decide_work_mode_ar50(struct msm_vidc_inst *inst)
 decision_done:
 
 	inst->clk_data.work_mode = pdata.video_work_mode;
-	rc = call_hfi_op(hdev, session_set_property,
-			(void *)inst->session, HFI_PROPERTY_PARAM_WORK_MODE,
-			(void *)&pdata, sizeof(pdata));
-	if (rc)
-		s_vpr_e(inst->sid, "Failed to configure Work Mode\n");
+	/*
+	 * venus 4.x/5.x firmware (AR50) does not support
+	 * HFI_PROPERTY_PARAM_WORK_MODE; sending it makes the firmware
+	 * return UNSUPPORTED_PROPERTY and kill the session.
+	 * Keep work_mode only for local clock/buffer calculations.
+	 */
+	if (inst->core->platform_data->vpu_ver != VPU_VERSION_AR50) {
+		rc = call_hfi_op(hdev, session_set_property,
+				(void *)inst->session, HFI_PROPERTY_PARAM_WORK_MODE,
+				(void *)&pdata, sizeof(pdata));
+		if (rc) {
+			s_vpr_e(inst->sid, "Failed to configure Work Mode\n");
+		}
+	} else {
+		rc = 0;
+	}
 
 	/* For WORK_MODE_1, set Low Latency mode by default to HW. */
 
@@ -1719,6 +1744,50 @@ int msm_vidc_decide_core_and_power_mode_ar50lt(struct msm_vidc_inst *inst)
 {
 	inst->clk_data.core_id = VIDC_CORE_ID_1;
 	return 0;
+}
+
+int msm_vidc_decide_core_and_power_mode_ar50(struct msm_vidc_inst *inst)
+{
+	bool enable = false;
+	int rc = 0;
+	u32 mbpf, mbps, max_hq_mbpf, max_hq_mbps;
+	struct msm_vidc_core *core;
+
+	if (!inst || !inst->core || !inst->core->device) {
+		d_vpr_e("%s: Invalid args: Inst = %pK\n",
+			__func__, inst);
+		return -EINVAL;
+	}
+
+	core = inst->core;
+
+	/*
+	 * Naples is single-core for video sessions: pin CORE_ID_1 so
+	 * msm_vidc_set_clocks accounts this session. No dual-core
+	 * balancing/LP migration here; that needs the firmware
+	 * max_video_cores report which AR50 doesn't query.
+	 * Over-admission is rejected earlier by
+	 * msm_vidc_check_mbps_supported (-EBUSY vs max-hw-load).
+	 */
+	inst->clk_data.core_id = VIDC_CORE_ID_1;
+
+	mbpf = msm_vidc_get_mbs_per_frame(inst);
+	mbps = mbpf * msm_vidc_get_fps(inst);
+	max_hq_mbpf = core->resources.max_hq_mbs_per_frame;
+	max_hq_mbps = core->resources.max_hq_mbs_per_sec;
+
+	/* Power saving always disabled for HEIF image sessions */
+	if (is_image_session(inst))
+		msm_vidc_power_save_mode_enable(inst, false);
+	else if (is_encode_session(inst)) {
+		if (mbpf > max_hq_mbpf || mbps > max_hq_mbps)
+			enable = true;
+		msm_vidc_power_save_mode_enable(inst, enable);
+	}
+
+	rc = msm_comm_scale_clocks_and_bus(inst, 1);
+	msm_print_core_status(core, VIDC_CORE_ID_1, inst->sid);
+	return rc;
 }
 
 int msm_vidc_decide_core_and_power_mode_iris1(struct msm_vidc_inst *inst)

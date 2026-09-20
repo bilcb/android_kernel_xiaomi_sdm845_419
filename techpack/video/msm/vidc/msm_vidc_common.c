@@ -1729,7 +1729,15 @@ static void handle_event_change(enum hal_command_response cmd, void *data)
 						__func__);
 			}
 			/* Update driver buffer count */
-			fmt->count_min = event_notify->fw_min_cnt;
+			/*
+			* venus 4.x/5.x firmware reports fw_min_cnt = 0 in the
+			* seq-changed event; keep the previous count instead of
+			* sending BUFFER_COUNT_ACTUAL with min 0 (which makes the
+			* firmware assert).
+			*/
+			if (event_notify->fw_min_cnt) {
+				fmt->count_min = event_notify->fw_min_cnt;
+			}
 			msm_dcvs_reset(inst);
 			s_vpr_h(inst->sid,
 				"seq: No parameter change continue session\n");
@@ -1839,7 +1847,15 @@ static void handle_event_change(enum hal_command_response cmd, void *data)
 		msm_dcvs_try_enable(inst);
 		extra_buff_count = msm_vidc_get_extra_buff_count(inst,
 				HAL_BUFFER_OUTPUT);
-		fmt->count_min = event_notify->fw_min_cnt;
+		/*
+		 * venus 4.x/5.x firmware reports fw_min_cnt = 0 in the
+		 * seq-changed event; keep the previous count instead of
+		 * sending BUFFER_COUNT_ACTUAL with min 0 (which makes the
+		 * firmware assert).
+		 */
+		if (event_notify->fw_min_cnt) {
+			fmt->count_min = event_notify->fw_min_cnt;
+		}
 		fmt->count_min_host = fmt->count_min + extra_buff_count;
 		s_vpr_h(inst->sid,
 			"seq: hal buffer[%d] count: min %d min_host %d\n",

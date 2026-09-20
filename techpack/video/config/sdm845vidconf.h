@@ -2,6 +2,4 @@
 /*
  * Copyright (c) 2019, The Linux Foundation. All rights reserved.
  */
-
-#define CONFIG_MSM_VIDC_V4L2 1
-#define VENUS_USE_64BIT_ALIGNMENT 1
+#define CONFIG_MSM_VIDC_V4L2 1 
