@@ -39,8 +39,14 @@ QDF_STATUS qdf_debugfs_init(void)
 {
 	qdf_debugfs_root = debugfs_create_dir(KBUILD_MODNAME, NULL);
 
-	if (!qdf_debugfs_root)
-		return QDF_STATUS_E_FAILURE;
+	if (!qdf_debugfs_root) {
+		/*
+		 * debugfs is best-effort: with CONFIG_DEBUG_FS enabled
+		 * the real create can fail (while the disabled-stub
+		 * always "succeeds"). Never fail driver init for it.
+		 */
+		pr_err("qdf: debugfs root create failed, continuing without debugfs\n");
+	}
 
 	return QDF_STATUS_SUCCESS;
 }
@@ -289,8 +295,11 @@ qdf_dentry_t qdf_debugfs_create_dir(const char *name, qdf_dentry_t parent)
 
 	if (!name)
 		return NULL;
-	if (!parent)
+	if (!parent) {
 		parent = qdf_debugfs_get_root();
+		if (!parent)
+			return NULL;
+	}
 
 	dir = debugfs_create_dir(name, parent);
 
@@ -314,8 +323,11 @@ qdf_dentry_t qdf_debugfs_create_file(const char *name, uint16_t mode,
 	if (!name || !fops)
 		return NULL;
 
-	if (!parent)
+	if (!parent) {
 		parent = qdf_debugfs_get_root();
+		if (!parent)
+			return NULL;
+	}
 
 	filemode = qdf_debugfs_get_filemode(mode);
 	file = debugfs_create_file(name, filemode, parent, fops,
