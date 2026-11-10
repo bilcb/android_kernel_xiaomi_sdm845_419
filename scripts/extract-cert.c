@@ -21,6 +21,14 @@
 #include <openssl/bio.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
+/*
+ * OpenSSL 4.0 removed the ENGINE API; its headers turn the remaining calls
+ * into stubs when this is defined, which is all this tool needs - the API is
+ * only reached for "pkcs11:" sources and this build always passes a PEM file.
+ */
+#ifndef OPENSSL_ENGINE_STUBS
+#define OPENSSL_ENGINE_STUBS
+#endif
 #include <openssl/engine.h>
 
 /*
