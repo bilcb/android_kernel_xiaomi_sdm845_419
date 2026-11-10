@@ -71,6 +71,19 @@
 	/delete-property/ qcom,smmu-fast-map;
 };
 
+&reserved_memory {
+	ramoops: ramoops@b0100000 {
+		compatible = "ramoops";
+		reg = <0x0 0xb0100000 0x0 0x400000>;
+		no-map;
+
+		record-size = <0x40000>;
+		console-size = <0x100000>;
+		pmsg-size = <0x40000>;
+		ftrace-size = <0x4000>;
+	};
+};
+
 &soc {
 	qcom,msm-imem@146bf000 {
 		dload_type@18 {
